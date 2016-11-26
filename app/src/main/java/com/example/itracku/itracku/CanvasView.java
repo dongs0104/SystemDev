@@ -4,9 +4,11 @@ import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.graphics.Path;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.View;
+import android.widget.Toast;
 
 import org.altbeacon.beacon.Beacon;
 
@@ -22,21 +24,29 @@ public class CanvasView extends View {
     TestClassRoomList tcl;
     ArrayList<Beacon> beacons;
     UserLocation user;
+    RoomLocation room;
     MapInfo mapInfo = null;
-
+    boolean roomSearchToggle ;
     public CanvasView(Context context) {
         super(context);
         user = new UserLocation();
+        roomSearchToggle = false;
+    }
+
+    public void setRoomSearchToggle(boolean roomSearchToggle) {
+        this.roomSearchToggle = roomSearchToggle;
     }
 
     public CanvasView(Context context, AttributeSet attributeSet) {
         super(context, attributeSet);
         user = new UserLocation();
+        roomSearchToggle = false;
     }
 
     public CanvasView(Context context, AttributeSet attributeSet, int re) {
         super(context, attributeSet, re);
         user = new UserLocation();
+        roomSearchToggle = false;
     }
 
     public void setMapInfo(MapInfo mapInfo) {
@@ -55,8 +65,12 @@ public class CanvasView extends View {
                 canvas.drawCircle((float) t.getX(), (float) t.getY(), 10f, paint);
             }
         }
-
         canvas.drawCircle(user.x, user.y, user.radius, user.paint);
+        if (roomSearchToggle == true) {
+            canvas.drawLine(300 , room.y, 365 , room.y, room.paint);
+            canvas.drawLine(300, room.y , 300, user.y, room.paint);
+            canvas.drawLine(300, user.y , 365, user.y, room.paint);
+        }
     }
 
     public void setBeacons(ArrayList<Beacon> beacons) {
@@ -157,6 +171,19 @@ public class CanvasView extends View {
             this.paint.setColor(Color.BLUE);
         }
     }
+    public class RoomLocation {
+        public float x;
+        public float y;
+        public Paint paint;
+
+        public RoomLocation() {
+            this.x = 0;
+            this.y = 0;
+            this.paint = new Paint();
+            this.paint.setColor(Color.RED);
+        }
+    }
+
 
     /**
      * drawing test beacons
@@ -170,11 +197,21 @@ public class CanvasView extends View {
     public void setTestClassRoom(TestClassRoomList tcl){this.tcl = tcl;}
     public void drawClassRoomPath(String sRoom)
     {
-
-        if(room.x > user.x)
-        {
-
+        for (TestClassRoom t: tcl.getClassRoomList()) {
+            if(t.getRoomName() == sRoom)
+            {
+                if( t.getuY() < user.y && user.y < t.getdY() ){
+                    Log.d("Draw호출", "drawClassRoomPath: 찾음");
+                    roomSearchToggle = false;
+                }
+                else
+                {
+                    room.x = 365;
+                    room.y = (float) (t.getdY() + t.getuY() / 2);
+                }
+            }
         }
+
     }
 
 }

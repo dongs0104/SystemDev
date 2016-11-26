@@ -16,4 +16,7 @@ public class TestClassRoomList {
         classRoomList.add(new TestClassRoom(365, 1440, 715, 1860,scaleX,scaleY,"329"));
     }
 
+    public ArrayList<TestClassRoom> getClassRoomList() {
+        return classRoomList;
+    }
 }

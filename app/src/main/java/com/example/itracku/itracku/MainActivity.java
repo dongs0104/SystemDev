@@ -30,7 +30,7 @@ import java.util.Comparator;
 public class MainActivity extends AppCompatActivity implements RangeNotifier, BeaconConsumer {
     private MapInfo mapInfo;
     private TestBeaconList testBeaconList;
-
+    private TestClassRoomList testClassRoomList;
     private ImageView mainMap;
     private CanvasView mainCanvas;
     private BackPressCloseHandler mCloseHandler;
@@ -40,7 +40,7 @@ public class MainActivity extends AppCompatActivity implements RangeNotifier, Be
     //private Region mRegion = new Region("ITrackU", Identifier.parse("617E8096-BAB7-43F3-BF96-3FD6F26D67B1"), null, null);
     /*자동 완성을 위해 사용*/
     private AutoCompleteTextView textView;
-    String[] rooms={"329","330","331","332"};
+    String[] rooms={"329", "330", "331", "332"};
     /*이동 버튼*/
     private Button moveButton;
     @Override
@@ -68,12 +68,16 @@ public class MainActivity extends AppCompatActivity implements RangeNotifier, Be
         ArrayAdapter adapter = new ArrayAdapter(this,android.R.layout.simple_list_item_1, rooms);
         textView.setAdapter(adapter);
         /*버튼 이벤트 설정*/
+        testClassRoomList = new TestClassRoomList();
+        mainCanvas.setTestClassRoom(testClassRoomList);
         moveButton = (Button) findViewById(R.id.button);
         moveButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(textView.getText().toString().length() == 3)
-                mainCanvas.drawClassRoomPath(textView.getText().toString());
+                if(textView.getText().toString().length() == 3) {
+                    mainCanvas.drawClassRoomPath(textView.getText().toString());
+                    mainCanvas.setRoomSearchToggle(true);
+                }
             }
         });
     }
@@ -87,6 +91,7 @@ public class MainActivity extends AppCompatActivity implements RangeNotifier, Be
         testBeaconList = new TestBeaconList();
         testBeaconList.init(mapInfo.getScaleX(), mapInfo.getScaleY());
         mainCanvas.setTestBeacon(testBeaconList);
+        mainCanvas.setTestClassRoom(testClassRoomList);
     }
 
     @Override
