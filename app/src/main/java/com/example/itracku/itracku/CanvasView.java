@@ -69,12 +69,12 @@ public class CanvasView extends View {
             }
         }
         canvas.drawCircle(user.x, user.y, user.radius, user.paint);
-        if (roomSearchToggle == true) {
+        if (roomSearchToggle) {
 
-            canvas.drawLine(room.x - 20 , room.y, room.x , room.y, room.paint);
+            canvas.drawLine(user.x , room.y, room.x - 30, room.y, room.paint);
             //길게 색칠
-            canvas.drawLine(room.x - 20, room.y , room.x - 20 , user.y, room.paint);
-            canvas.drawLine(room.x - 20, user.y , room.x, user.y, room.paint);
+            canvas.drawLine(room.x - 30, room.y , room.x - 30 , user.y, room.paint);
+            canvas.drawLine(room.x - 30, user.y , room.x, user.y, room.paint);
         }
     }
 
