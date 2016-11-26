@@ -12,6 +12,7 @@ import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.SlidingDrawer;
 import android.widget.Toast;
 
 import org.altbeacon.beacon.Beacon;
@@ -44,6 +45,7 @@ public class MainActivity extends AppCompatActivity implements RangeNotifier, Be
     /*이동 버튼*/
     private Button moveButton;
     @Override
+
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
@@ -55,7 +57,7 @@ public class MainActivity extends AppCompatActivity implements RangeNotifier, Be
         mBeaconManager.setBackgroundScanPeriod(300);
         mBeaconManager.setBackgroundBetweenScanPeriod(300);
         mBeaconManager.bind(this);
-
+        mCloseHandler = new BackPressCloseHandler(this);
         mainMap = (ImageView) findViewById(R.id.main_map);
         mainCanvas = (CanvasView) findViewById(R.id.main_canvas);
 
@@ -68,14 +70,11 @@ public class MainActivity extends AppCompatActivity implements RangeNotifier, Be
         ArrayAdapter adapter = new ArrayAdapter(this,android.R.layout.simple_list_item_1, rooms);
         textView.setAdapter(adapter);
         /*버튼 이벤트 설정*/
-        testClassRoomList = new TestClassRoomList();
-        mainCanvas.setTestClassRoom(testClassRoomList);
         moveButton = (Button) findViewById(R.id.button);
         moveButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 if(textView.getText().toString().length() == 3) {
-                    mainCanvas.drawClassRoomPath(textView.getText().toString());
                     mainCanvas.setRoomSearchToggle(true);
                 }
             }
@@ -89,7 +88,9 @@ public class MainActivity extends AppCompatActivity implements RangeNotifier, Be
         mapInfo.initialize(v.getWidth(), v.getHeight());
 
         testBeaconList = new TestBeaconList();
+        testClassRoomList = new TestClassRoomList();
         testBeaconList.init(mapInfo.getScaleX(), mapInfo.getScaleY());
+        testClassRoomList.init(mapInfo.getScaleX(), mapInfo.getScaleY());
         mainCanvas.setTestBeacon(testBeaconList);
         mainCanvas.setTestClassRoom(testClassRoomList);
     }
@@ -148,6 +149,8 @@ public class MainActivity extends AppCompatActivity implements RangeNotifier, Be
 
                 //mainCanvas.setBeacons();
                 mainCanvas.drawUserLocation(sortedBeacons);
+                if(textView.getText().toString().length() == 3)
+                    mainCanvas.drawClassRoomPath(textView.getText().toString());
                 mainCanvas.invalidate();
             }
         });
@@ -165,6 +168,8 @@ public class MainActivity extends AppCompatActivity implements RangeNotifier, Be
             if(System.currentTimeMillis() > backKeyPressedTime + 2000) {
                 backKeyPressedTime = System.currentTimeMillis();
                 Toast.makeText(activity, "\'뒤로\' 버튼을 한 번 더 누르시면 종료됩니다.", Toast.LENGTH_SHORT).show();
+                SlidingDrawer drawer = (SlidingDrawer)findViewById(R.id.slide);
+                drawer.animateClose();
                 return;
             }
 

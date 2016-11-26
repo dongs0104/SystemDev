@@ -30,6 +30,7 @@ public class CanvasView extends View {
     public CanvasView(Context context) {
         super(context);
         user = new UserLocation();
+        room = new RoomLocation();
         roomSearchToggle = false;
     }
 
@@ -40,12 +41,14 @@ public class CanvasView extends View {
     public CanvasView(Context context, AttributeSet attributeSet) {
         super(context, attributeSet);
         user = new UserLocation();
+        room = new RoomLocation();
         roomSearchToggle = false;
     }
 
     public CanvasView(Context context, AttributeSet attributeSet, int re) {
         super(context, attributeSet, re);
         user = new UserLocation();
+        room = new RoomLocation();
         roomSearchToggle = false;
     }
 
@@ -67,9 +70,9 @@ public class CanvasView extends View {
         }
         canvas.drawCircle(user.x, user.y, user.radius, user.paint);
         if (roomSearchToggle == true) {
-            canvas.drawLine(300 , room.y, 365 , room.y, room.paint);
-            canvas.drawLine(300, room.y , 300, user.y, room.paint);
-            canvas.drawLine(300, user.y , 365, user.y, room.paint);
+            canvas.drawLine(room.x - 20 , room.y, room.x , room.y, room.paint);
+            canvas.drawLine(room.x - 20, room.y , room.x - 20 , user.y, room.paint);
+            canvas.drawLine(room.x - 20, user.y , room.x, user.y, room.paint);
         }
     }
 
@@ -169,6 +172,7 @@ public class CanvasView extends View {
             this.radius = 10;
             this.paint = new Paint();
             this.paint.setColor(Color.BLUE);
+
         }
     }
     public class RoomLocation {
@@ -181,6 +185,7 @@ public class CanvasView extends View {
             this.y = 0;
             this.paint = new Paint();
             this.paint.setColor(Color.RED);
+            this.paint.setStrokeWidth(5.0f);
         }
     }
 
@@ -197,17 +202,19 @@ public class CanvasView extends View {
     public void setTestClassRoom(TestClassRoomList tcl){this.tcl = tcl;}
     public void drawClassRoomPath(String sRoom)
     {
+        if(roomSearchToggle == true)
         for (TestClassRoom t: tcl.getClassRoomList()) {
-            if(t.getRoomName() == sRoom)
+
+            if(t.getRoomName().equals(sRoom))
             {
-                if( t.getuY() < user.y && user.y < t.getdY() ){
+                if( t.getuY() <= user.y && user.y <= t.getdY() ){
                     Log.d("Draw호출", "drawClassRoomPath: 찾음");
                     roomSearchToggle = false;
                 }
                 else
                 {
-                    room.x = 365;
-                    room.y = (float) (t.getdY() + t.getuY() / 2);
+                    room.x = (float) t.getuX();
+                    room.y = (float) ((t.getdY() + t.getuY()) / 2);
                 }
             }
         }
