@@ -19,9 +19,9 @@ import java.util.ArrayList;
 public class CanvasView extends View {
     private static double M_TO_PX = 21.208791;
     TestBeaconList tbl;
+    TestClassRoomList tcl;
     ArrayList<Beacon> beacons;
     UserLocation user;
-    ClassRoomLocation room;
     MapInfo mapInfo = null;
 
     public CanvasView(Context context) {
@@ -167,21 +167,7 @@ public class CanvasView extends View {
     /*
     * DrawPathToClass
     * */
-    public class ClassRoomLocation {
-        public int x;
-        public int y;
-        public Paint paint;
-        public String roomNumber;
-
-        public ClassRoomLocation() {
-            this.x = 0;
-            this.y = 0;
-            roomNumber = "0";
-            this.paint = new Paint();
-            this.paint.setColor(Color.RED);
-        }
-
-    }
+    public void setTestClassRoom(TestClassRoomList tcl){this.tcl = tcl;}
     public void drawClassRoomPath(String sRoom)
     {
 

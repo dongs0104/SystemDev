@@ -14,7 +14,6 @@ public class TestClassRoomList {
         classRoomList.add(new TestClassRoom(365, 360, 715, 1000,scaleX,scaleY,"331"));
         classRoomList.add(new TestClassRoom(365, 1000, 715 , 1440,scaleX,scaleY,"330"));
         classRoomList.add(new TestClassRoom(365, 1440, 715, 1860,scaleX,scaleY,"329"));
-
     }
 
 }
