@@ -18,32 +18,33 @@
         android:layout_width="match_parent"
         android:layout_height="440dp" />
 
-    <LinearLayout
+    <SlidingDrawer
+        android:id="@+id/slide"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
+        android:allowSingleTap="true"
+        android:animateOnClick="true"
+        android:bottomOffset="5dp"
+        android:content="@+id/content"
+        android:handle="@+id/handle"
         android:orientation="vertical"
-        android:layout_gravity="bottom"
-        android:background="@color/grey_lt4">
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:gravity="center"
-            android:background="@drawable/border">
+        android:topOffset="60dp"
+        >
 
             <ImageView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:src="@drawable/ic_reorder_black_24dp"
-                android:tint="@color/grey_dk3"/>
-        </LinearLayout>
+                android:tint="@color/grey_dk3"
+                android:id="@+id/handle"/>
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            android:weightSum="1">
+            android:weightSum="1"
+            android:background="@color/grey_lt4"
+            android:id="@+id/content">
 
             <AutoCompleteTextView
                 android:layout_width="wrap_content"
@@ -62,8 +63,5 @@
                 android:text="이동"
                 android:id="@+id/button" />
         </LinearLayout>
-
-    </LinearLayout>
-
+    </SlidingDrawer>
 </FrameLayout>
-

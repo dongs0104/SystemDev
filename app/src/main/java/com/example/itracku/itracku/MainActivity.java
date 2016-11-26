@@ -34,7 +34,7 @@ public class MainActivity extends AppCompatActivity implements RangeNotifier, Be
     private ImageView mainMap;
     private CanvasView mainCanvas;
     private BackPressCloseHandler mCloseHandler;
-
+    private ImageView drawBtn;
     private BeaconManager mBeaconManager;
     private Region mRegion = new Region("ITrackU", Identifier.parse("50CF90B0-0C8F-11E4-9191-0800200C9A66"), null, null);
     //private Region mRegion = new Region("ITrackU", Identifier.parse("617E8096-BAB7-43F3-BF96-3FD6F26D67B1"), null, null);
