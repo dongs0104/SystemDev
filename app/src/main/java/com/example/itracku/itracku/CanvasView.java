@@ -111,6 +111,7 @@ public class CanvasView extends View {
                     if(t.isEquals(copyBeacons.get(i))) {
                         testBeacons.add(t);
                         distances.add(calculateBeaconDistance(copyBeacons.get(i)));
+
                         //distances.add(copyBeacons.get(i).getDistance() * M_TO_PX);
                         count++;
                         break;
@@ -148,17 +149,22 @@ public class CanvasView extends View {
     }
 
     public double calculateBeaconDistance(Beacon beacon) {
-        if(beacon.getRssi() == 0) {
-            return -1.0;
+        double rssi = beacon.getRssi();
+
+        double txPower = -60.0d;
+        if (rssi == 0) {
+            return -1.0; // if we cannot determine distance, return -1.
         }
 
-        double ratio = (double) beacon.getRssi() * 1.0 / ((double) -74.0);
+        double ratio = rssi*1.0/txPower;
 
-        if(ratio < 1.0) {
-            return Math.pow(ratio, 10) * M_TO_PX;
-        } else {
-            double accuracy = (0.89976) * Math.pow(ratio, 7.7095) + 0.111;
-            return accuracy * M_TO_PX;
+        if (ratio < 1.0) {
+            return Math.pow(ratio,10);
+        }
+        else {
+            double accuracy =  (0.42093)*Math.pow(ratio,6.9476) + 0.54992;
+            Log.d(beacon.getId2() + ", " + beacon.getId3(), "calculateBeaconDistance: " + accuracy);
+            return accuracy;
         }
     }
 

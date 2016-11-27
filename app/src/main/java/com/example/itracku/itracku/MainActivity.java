@@ -51,7 +51,7 @@ public class MainActivity extends AppCompatActivity implements RangeNotifier, Be
         setContentView(R.layout.activity_main);
 
         mBeaconManager = BeaconManager.getInstanceForApplication(this);
-        mBeaconManager.getBeaconParsers().add(new BeaconParser().setBeaconLayout("m:2-3=0215,i:4-19,i:20-21,i:22-23,p:24-24,d:25-25"));
+        mBeaconManager.getBeaconParsers().add(new BeaconParser().setBeaconLayout("m:2-3=0215,i:4-19,i:20-21,i:22-23,p:24-24"));
         mBeaconManager.setForegroundScanPeriod(300);
         mBeaconManager.setForegroundBetweenScanPeriod(300);
         mBeaconManager.setBackgroundScanPeriod(300);
@@ -140,13 +140,11 @@ public class MainActivity extends AppCompatActivity implements RangeNotifier, Be
             public void run() {
                 ArrayList<Beacon> sortedBeacons = new ArrayList<Beacon>(beacons);
                 Collections.sort(sortedBeacons, new Comparator<Beacon>() {
-
                     @Override
                     public int compare(Beacon beacon0, Beacon beacon1) {
                         return new Double(beacon0.getDistance()).compareTo(new Double(beacon1.getDistance()));
                     }
                 });
-
                 //mainCanvas.setBeacons();
                 mainCanvas.drawUserLocation(sortedBeacons);
                 if(textView.getText().toString().length() == 3)
@@ -169,7 +167,8 @@ public class MainActivity extends AppCompatActivity implements RangeNotifier, Be
                 backKeyPressedTime = System.currentTimeMillis();
                 Toast.makeText(activity, "\'뒤로\' 버튼을 한 번 더 누르시면 종료됩니다.", Toast.LENGTH_SHORT).show();
                 SlidingDrawer drawer = (SlidingDrawer)findViewById(R.id.slide);
-                drawer.animateClose();
+                if(drawer.isFocused())
+                    drawer.animateClose();
                 return;
             }
 
