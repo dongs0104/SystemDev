@@ -10,7 +10,13 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
 
+
+import com.example.itracku.itracku.trilateration.NonLinearLeastSquaresSolver;
+import com.example.itracku.itracku.trilateration.TrilaterationFunction;
+
 import org.altbeacon.beacon.Beacon;
+import org.apache.commons.math3.fitting.leastsquares.LeastSquaresOptimizer;
+import org.apache.commons.math3.fitting.leastsquares.LevenbergMarquardtOptimizer;
 
 import java.util.ArrayList;
 
@@ -71,10 +77,10 @@ public class CanvasView extends View {
         canvas.drawCircle(user.x, user.y, user.radius, user.paint);
         if (roomSearchToggle) {
 
-            canvas.drawLine(user.x , room.y, room.x - 30, room.y, room.paint);
+            canvas.drawLine(room.x , room.y, room.x - 30, room.y, room.paint);
             //길게 색칠
             canvas.drawLine(room.x - 30, room.y , room.x - 30 , user.y, room.paint);
-            canvas.drawLine(room.x - 30, user.y , room.x, user.y, room.paint);
+            canvas.drawLine(room.x - 30, user.y , user.x, user.y, room.paint);
         }
     }
 
@@ -102,7 +108,7 @@ public class CanvasView extends View {
 
         if(copyBeacons.size() >= 3) {
             ArrayList<TestBeacon> testBeacons = new ArrayList<>();
-            ArrayList<Double> distances = new ArrayList<>();
+            ArrayList<Double> testdistances = new ArrayList<>();
 
             int count = 0;
 
@@ -110,41 +116,28 @@ public class CanvasView extends View {
                 for(int i = 0; i < copyBeacons.size(); i++) {
                     if(t.isEquals(copyBeacons.get(i))) {
                         testBeacons.add(t);
-                        distances.add(calculateBeaconDistance(copyBeacons.get(i)));
+                        testdistances.add(calculateBeaconDistance(copyBeacons.get(i)));
 
                         //distances.add(copyBeacons.get(i).getDistance() * M_TO_PX);
-                        count++;
+                  //      count++;
                         break;
                     }
                 }
 
-                if(count >= 3) { break; }
+                //if(count >= 4) { break; }
             }
+            if (testBeacons.size() == 4) {
+                double[][] positions = new double[][]{{testBeacons.get(0).getOriginX(), testBeacons.get(0).getOriginY()}, {testBeacons.get(1).getOriginX(), testBeacons.get(1).getOriginY()}, {testBeacons.get(2).getOriginX(), testBeacons.get(2).getOriginY()},{testBeacons.get(3).getOriginX(), testBeacons.get(3).getOriginY()}};
+                double[] distances = new double[]{testdistances.get(0), testdistances.get(1), testdistances.get(2), testdistances.get(3)};
 
-            double x1, x2, x3, y1, y2, y3;
-            double x, y;
+                NonLinearLeastSquaresSolver solver = new NonLinearLeastSquaresSolver(new TrilaterationFunction(positions, distances), new LevenbergMarquardtOptimizer());
+                LeastSquaresOptimizer.Optimum optimum = solver.solve();
+                double[] centroid = optimum.getPoint().toArray();
 
-            x1 = (testBeacons.get(1).getOriginY() - testBeacons.get(0).getOriginY()) * (Math.pow(testBeacons.get(1).getOriginX(), 2) - Math.pow(testBeacons.get(2).getOriginX(), 2) + Math.pow(testBeacons.get(1).getOriginY(), 2) - Math.pow(testBeacons.get(2).getOriginY(), 2) - Math.pow(distances.get(1), 2) + Math.pow(distances.get(2), 2));
-            x2 = (testBeacons.get(2).getOriginY() - testBeacons.get(1).getOriginY()) * (Math.pow(testBeacons.get(0).getOriginX(), 2) - Math.pow(testBeacons.get(1).getOriginX(), 2) + Math.pow(testBeacons.get(0).getOriginY(), 2) - Math.pow(testBeacons.get(1).getOriginY(), 2) - Math.pow(distances.get(0), 2) + Math.pow(distances.get(1), 2));
-            x3 = 2 * ((testBeacons.get(1).getOriginX() - testBeacons.get(0).getOriginX()) * (testBeacons.get(2).getOriginY() - testBeacons.get(1).getOriginY()) - (testBeacons.get(2).getOriginX() - testBeacons.get(1).getOriginX()) * (testBeacons.get(1).getOriginY() - testBeacons.get(0).getOriginY()));
-            x = (x1 - x2) / x3;
-
-            y1 = (testBeacons.get(1).getOriginX() - testBeacons.get(0).getOriginX()) * (Math.pow(testBeacons.get(1).getOriginX(), 2) - Math.pow(testBeacons.get(2).getOriginX(), 2) + Math.pow(testBeacons.get(1).getOriginY(), 2) - Math.pow(testBeacons.get(2).getOriginY(), 2) - Math.pow(distances.get(1), 2) + Math.pow(distances.get(2), 2));
-            y2 = (testBeacons.get(2).getOriginX() - testBeacons.get(1).getOriginX()) * (Math.pow(testBeacons.get(0).getOriginX(), 2) - Math.pow(testBeacons.get(1).getOriginX(), 2) + Math.pow(testBeacons.get(0).getOriginY(), 2) - Math.pow(testBeacons.get(1).getOriginY(), 2) - Math.pow(distances.get(0), 2) + Math.pow(distances.get(1), 2));
-            y3 = 2 * ((testBeacons.get(2).getOriginX() - testBeacons.get(1).getOriginX()) * (testBeacons.get(1).getOriginY() - testBeacons.get(0).getOriginY()) - (testBeacons.get(1).getOriginX() - testBeacons.get(0).getOriginX()) * (testBeacons.get(2).getOriginY() - testBeacons.get(1).getOriginY()));
-            y = (y1 - y2) / y3;
-
-            /*double w, z, x, y, y2;
-            w = Math.pow(distances.get(0), 2) - Math.pow(distances.get(1), 2) - Math.pow(testBeacons.get(0).getX(), 2) - Math.pow(testBeacons.get(0).getY(), 2) + Math.pow(testBeacons.get(1).getX(), 2) + Math.pow(testBeacons.get(1).getY(), 2);
-            z = Math.pow(distances.get(1), 2) - Math.pow(distances.get(2), 2) - Math.pow(testBeacons.get(1).getX(), 2) - Math.pow(testBeacons.get(1).getY(), 2) + Math.pow(testBeacons.get(2).getX(), 2) + Math.pow(testBeacons.get(2).getY(), 2);
-            x = (w * (testBeacons.get(2).getY() - testBeacons.get(1).getY()) - z * (testBeacons.get(1).getY() - testBeacons.get(0).getY())) / (2 * ((testBeacons.get(1).getX() - testBeacons.get(0).getX()) * (testBeacons.get(2).getX() - testBeacons.get(1).getY()) - (testBeacons.get(2).getX() - testBeacons.get(1).getX()) * (testBeacons.get(1).getY() - testBeacons.get(0).getY())));
-            y = (w - 2 * x * (testBeacons.get(1).getX() - testBeacons.get(0).getX())) / (2 * (testBeacons.get(1).getY() - testBeacons.get(0).getY()));
-            y2 = (z - 2 * x * (testBeacons.get(2).getX() - testBeacons.get(1).getX())) / (2 * (testBeacons.get(2).getX() - testBeacons.get(1).getY()));
-            y = (y + y2) / 2;*/
-
-            user.x = (int) (x * mapInfo.getScaleX());
-            user.y = (int) (y * mapInfo.getScaleY());
-            Log.d("test", String.valueOf(user.x) + ", " + String.valueOf(user.y));
+                user.x = (int) (centroid[0] * mapInfo.getScaleX());
+                user.y = (int) (centroid[1] * mapInfo.getScaleY());
+                Log.d("test", String.valueOf(user.x) + ", " + String.valueOf(user.y));
+            }
         }
     }
 
