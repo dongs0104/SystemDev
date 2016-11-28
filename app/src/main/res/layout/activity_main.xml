@@ -29,6 +29,7 @@
         android:handle="@+id/handle"
         android:orientation="vertical"
         android:topOffset="60dp"
+
         >
 
         <LinearLayout
@@ -37,6 +38,7 @@
             android:orientation="horizontal"
             android:gravity="center"
             android:background="@drawable/border"
+            
             android:id="@+id/handle">
             <ImageView
                 android:layout_width="wrap_content"
@@ -51,7 +53,6 @@
             android:weightSum="1"
             android:background="@color/grey_lt4"
             android:id="@+id/content">
-
             <AutoCompleteTextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"

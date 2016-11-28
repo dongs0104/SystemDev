@@ -150,7 +150,7 @@ public class MainActivity extends AppCompatActivity implements RangeNotifier, Be
                     }
                 });
                 //mainCanvas.setBeacons();
-                mainCanvas.drawUserLocation(sortedBeacons);
+                mainCanvas.calPositioning(sortedBeacons);
                 if(textView.getText().toString().length() == 3)
                     mainCanvas.drawClassRoomPath(textView.getText().toString());
                 mainCanvas.invalidate();

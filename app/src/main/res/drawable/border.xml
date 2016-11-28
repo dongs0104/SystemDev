@@ -5,6 +5,6 @@
         android:width="1dp"
         android:color="@color/bluegrey_lt4" />
 
-    <fill
+    <solid
         android:color="@color/grey_lt5" />
 </shape>
