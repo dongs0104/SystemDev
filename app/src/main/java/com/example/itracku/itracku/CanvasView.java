@@ -127,7 +127,7 @@ public class CanvasView extends View {
         boolean inroom = false, incorridor = false;
         ArrayList<Beacon> copyBeacons = (ArrayList) beacons.clone();
         ArrayList<Beacon> tempBeacons = new ArrayList<>();
-
+        Log.d("calPositioning:", " realbeacons count " + beacons.size());
         if(beacons.size() == 0) {
             return;
         }
@@ -135,7 +135,7 @@ public class CanvasView extends View {
             for(Beacon b : beacons) {
                 if(b.getId3().toString().equals("5")) {
                     copyBeacons.remove(b);
-                } else if(calculateBeaconDistance(b) < 3.0) {
+                } else if(calculateBeaconDistance(b) > 5.0) {
                     copyBeacons.remove(b);
                 }
             }
@@ -144,7 +144,7 @@ public class CanvasView extends View {
             }
         }
         if(!inroom) {
-            for(Beacon b : copyBeacons) {
+            for(Beacon b : beacons) {
                 if(b.getId3().toString().equals("5")) {
                     tempBeacons.add(b);
                 }
@@ -155,16 +155,19 @@ public class CanvasView extends View {
             }
         }
 
+        Log.d("calPositioning:", " copyBeacons count " + copyBeacons.size());
+        Log.d("calPositioning:", " tempBeacons count " + tempBeacons.size());
         if(inroom) {
             drawUserLocation(copyBeacons);
-        } else if(incorridor) {
+        }
+        else if(incorridor) {
             drawUserCorridorLocation(tempBeacons);
         }
     }
     public void drawUserCorridorLocation(ArrayList<Beacon> beacons) {
         int count = 0;
         double d = 0, dy = 0, sd = 0;
-        double totalDistance = 0;
+        double totalDistance = 0d;
         ArrayList<TestBeacon> testBeacons = new ArrayList<>();
         totalDistance = calculateBeaconDistance(beacons.get(0)) + calculateBeaconDistance(beacons.get(1));
 
@@ -176,23 +179,23 @@ public class CanvasView extends View {
                     break;
                 }
             }
-
             if(count >= 2) { break; }
         }
+        if(testBeacons.size() == 2) {
+            if (testBeacons.get(0).getOriginY() >= testBeacons.get(1).getOriginY()) {
+                d = testBeacons.get(0).getOriginY() - testBeacons.get(1).getOriginY();
+                dy = testBeacons.get(1).getOriginY();
+            } else {
+                d = testBeacons.get(1).getOriginY() - testBeacons.get(0).getOriginY();
+                dy = testBeacons.get(0).getOriginY();
+            }
 
-        if(testBeacons.get(0).getOriginY() >= testBeacons.get(1).getOriginY()) {
-            d = testBeacons.get(0).getOriginY() - testBeacons.get(1).getOriginY();
-            dy = testBeacons.get(1).getOriginY();
-        } else {
-            d = testBeacons.get(1).getOriginY() - testBeacons.get(0).getOriginY();
-            dy = testBeacons.get(0).getOriginY();
+            sd = calculateBeaconDistance(beacons.get(0));
+            d = dy + d * (sd / totalDistance);
+
+            user.x = (int) testBeacons.get(0).getX();
+            user.y = (int) (d * mapInfo.getScaleY());
         }
-
-        sd = calculateBeaconDistance(beacons.get(0));
-        d = dy + d * (sd / totalDistance);
-
-        user.x = (int) testBeacons.get(0).getX();
-        user.y = (int) (d * mapInfo.getScaleY());
         Log.d("test", String.valueOf(user.x) + ", " + String.valueOf(user.y));
     }
     public double calculateBeaconDistance(Beacon beacon) {

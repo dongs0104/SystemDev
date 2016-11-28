@@ -27,6 +27,7 @@
         android:bottomOffset="5dp"
         android:content="@+id/content"
         android:handle="@+id/handle"
+
         android:orientation="vertical"
         android:topOffset="60dp"
 
@@ -38,7 +39,7 @@
             android:orientation="horizontal"
             android:gravity="center"
             android:background="@drawable/border"
-            
+
             android:id="@+id/handle">
             <ImageView
                 android:layout_width="wrap_content"

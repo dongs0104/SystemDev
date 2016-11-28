@@ -29,8 +29,6 @@ public class LinearLeastSquaresSolver {
 
         double[][] Ad = new double[numberOfPositions - 1][positionDimension];
 
-        // TODO: which reference position should be used?  currently using postion and distance in index 0.
-
         for (int i = 1; i < numberOfPositions; i++) {
             double[] Adi = new double[positionDimension];
             for (int j = 0; j < positionDimension; j++) {
