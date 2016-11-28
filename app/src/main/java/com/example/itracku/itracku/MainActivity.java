@@ -75,7 +75,11 @@ public class MainActivity extends AppCompatActivity implements RangeNotifier, Be
             @Override
             public void onClick(View view) {
                 if(textView.getText().toString().length() == 3) {
-                    mainCanvas.setRoomSearchToggle(true);
+                    if (!(mainCanvas.user.x == 0 && mainCanvas.user.y == 0)) {
+                        mainCanvas.setRoomSearchToggle(true);
+                    }
+                    else
+                        Toast.makeText(MainActivity.this, "현재 위치를 찾지 못하여\n검색할 수 없습니다.", Toast.LENGTH_SHORT).show();
                 }
             }
         });
@@ -167,8 +171,7 @@ public class MainActivity extends AppCompatActivity implements RangeNotifier, Be
                 backKeyPressedTime = System.currentTimeMillis();
                 Toast.makeText(activity, "\'뒤로\' 버튼을 한 번 더 누르시면 종료됩니다.", Toast.LENGTH_SHORT).show();
                 SlidingDrawer drawer = (SlidingDrawer)findViewById(R.id.slide);
-                if(drawer.isFocused())
-                    drawer.animateClose();
+                drawer.animateClose();
                 return;
             }
 

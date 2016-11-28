@@ -76,7 +76,6 @@ public class CanvasView extends View {
         }
         canvas.drawCircle(user.x, user.y, user.radius, user.paint);
         if (roomSearchToggle) {
-
             canvas.drawLine(room.x , room.y, room.x - 30, room.y, room.paint);
             //길게 색칠
             canvas.drawLine(room.x - 30, room.y , room.x - 30 , user.y, room.paint);
